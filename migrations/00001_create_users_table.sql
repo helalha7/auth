@@ -1,0 +1,14 @@
+-- +goose Up
+CREATE TABLE users(
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version INT NOT NULL DEFAULT 1,
+
+    full_name VARCHAR(300) NOT NULL,
+    username VARCHAR(300) NOT NULL UNIQUE,
+    password_hash VARCHAR(300) NOT NULL,
+    email VARCHAR(400) NOT NULL
+);
+
+-- +goose Down
+DROP TABLE users;
