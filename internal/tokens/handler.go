@@ -5,6 +5,7 @@ import (
 	"auth/internal/users"
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"time"
 )
@@ -34,6 +35,12 @@ func (h *Handler) CreateAuthenticationTokenHandler(w http.ResponseWriter, r *htt
 
 	user, err := h.UsersStore.GetByUsername(r.Context(), input.Username)
 	if err != nil {
+		switch {
+		case errors.Is(err, users.ErrUserNotFound):
+			http.Error(w, "user not found", http.StatusNotFound)
+		default:
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+		}
 		return
 	}
 

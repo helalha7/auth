@@ -76,7 +76,12 @@ func (s *Store) Get(ctx context.Context, id int) (*User, error) {
 		&user.PasswordHash,
 	)
 	if err != nil {
-		return nil, err
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, ErrUserNotFound
+		default:
+			return nil, err
+		}
 	}
 
 	return &user, nil
@@ -102,7 +107,12 @@ func (s *Store) GetByUsername(ctx context.Context, username string) (*User, erro
 		&user.PasswordHash,
 	)
 	if err != nil {
-		return nil, err
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, ErrUserNotFound
+		default:
+			return nil, err
+		}
 	}
 
 	return &user, nil
